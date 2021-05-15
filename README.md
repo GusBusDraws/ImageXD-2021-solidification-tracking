@@ -5,7 +5,8 @@ Materials presented at [BIDS ImageXD
 
 ## Setup
 
-Install [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge).
+Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or
+[Mambaforge](https://github.com/conda-forge/miniforge#mambaforge).
 
     $ mamba env create -f environment.yml
     $ conda activate solidification-tracking
