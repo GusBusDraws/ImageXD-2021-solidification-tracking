@@ -1,0 +1,14 @@
+name: solidification-tracking
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python==3.9
+  - numpy
+  - matplotlib
+  - pandas
+  - scikit-image
+  - plotly
+  - jupyter
+  - voila-reveal
+prefix: /home/marianne/mambaforge/envs/solidification-tracking
