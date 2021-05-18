@@ -14,4 +14,4 @@ Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or
 
     $ mamba env create -f environment.yml
     $ conda activate solidification-tracking
-    $ voila --template=reveal slideshow.ipynb
+    $ voila --strip_sources=False --template=reveal slideshow.ipynb
