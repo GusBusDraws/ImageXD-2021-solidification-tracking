@@ -1,6 +1,6 @@
 import os
 
-import imageio
+import imageio as io
 import numpy as np
 from skimage import (
     img_as_float, exposure, filters, measure, morphology, restoration
@@ -12,8 +12,7 @@ def load_am_img(
     data_path='data/nickel_solidification.tif', 
     crop_tup=(175, 60, 250, 110)
 ):
-    """Load an image corresponding to the image number image_n in dataset 
-     located in directory data_dir.
+    """Load an image from a stack of images.
 
     Parameters
     ----------
@@ -33,7 +32,7 @@ def load_am_img(
     """
     
     collection = []
-    reader = imageio.get_reader(data_path)
+    reader = io.get_reader(data_path)
     for img_slice in reader:
         collection.append(img_slice)
     img = collection[img_n]
