@@ -1,0 +1,6 @@
+{
+    "VoilaConfiguration": {
+        "strip_sources": false,
+        "template": "reveal"
+    }
+}
