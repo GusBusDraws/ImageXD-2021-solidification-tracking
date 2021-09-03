@@ -10,11 +10,9 @@ import pandas as pd
 from skimage import measure, morphology
 
 
-def plot_am_imgs(
-    img_n_list,
-    img_load_func,
+def plot_imgs(
+    img_list,
     row_title=None,
-    show_region_bbox=False,
     cmap='viridis', 
     show_axis=False, 
     tight_layout=True, 
@@ -24,11 +22,8 @@ def plot_am_imgs(
     
     Parameters
     ----------
-    img_dir_path : str
-        Path to directory containing raw images.
-    img_load_func : function, optional
-        Function used to load the image that will be subtracted. Defaults to 
-        load_am_img.
+    img_list : str
+        A list of images to be plotted.
     row_title : str, optional
         Y-axis label to give far left image to differentiate this set of 
         plotted images from any other rows of images that may also be plotted 
@@ -51,15 +46,12 @@ def plot_am_imgs(
         Matplotlib figure and axes containing 
         plotted images.
     """
-    fig, axes = plt.subplots(ncols=len(img_n_list), figsize=figsize)
+    fig, axes = plt.subplots(ncols=len(img_list), figsize=figsize)
     ax = axes.ravel()
 
-    for i, img_n in enumerate(img_n_list):
+    for i, img in enumerate(img_list):
         
-        img = img_load_func(img_n)
-
         ax[i].imshow(img, cmap=cmap, interpolation='nearest')
-        ax[i].set_title(f'Image {img_n}')
         
         if row_title is not None:
             ax[0].set_ylabel(row_title)
@@ -70,25 +62,6 @@ def plot_am_imgs(
             ax[i].set_xticks([])
             ax[i].set_yticks([])
         
-        # When show_region_bbox is true, plot bbox of regions determined by 
-        # skimage.morphology.label
-        if show_region_bbox:
-            # Label connected areas in masked image
-            labels = morphology.label(img, connectivity=2)
-            # Turn labels into regions
-            regions = measure.regionprops(labels)
-
-            mask = np.zeros(labels.shape, dtype=np.int)
-            for region in regions:
-                if (region.area > 100):
-                    mask[(labels == region.label)] = 1
-                    minr, minc, maxr, maxc = region.bbox
-                    rect = mpatches.Rectangle(
-                        (minc, minr), maxc - minc, maxr - minr, 
-                        fill=False, edgecolor='red', linewidth=2
-                    )
-                    ax[i].add_patch(rect)
-        
         # Cut down on white space in figure in matplotlib's automatic way
         if tight_layout:
             fig.tight_layout()
@@ -96,32 +69,23 @@ def plot_am_imgs(
     return fig, axes
     
 def plot_bbox(
-    img_n_list,
-    img_load_func,
-    region_gen_func,
+    img_list,
+    bbox_list,
     row_title=None,
     cmap='viridis', 
     show_axis=False,
     tight_layout=True, 
     figsize=(10, 6)
 ):
-    """Generate a bounding box (bbox) from a processing routine and plot the 
-    resulting bbox on a loaded image.
+    """Plot bounding boxes on a loaded image.
     
     Parameters
     ----------
-    img_n_list : array-like
-        A list or array of image numbers for which bounding boxes of regions of 
-        interest will be plotted.
-    img_load_func : function
-        An image returning function that takes an image number as an argument 
-        to return an image on which the bounding box of the determined region 
-        of interest will be plotted.
-    region_gen_func : function
-        A bounding box returning function that take an image number as an 
-        argument, loads the corresponding image, and performs a series of 
-        processing functions on that image to generate a region of interest of 
-        which a bounding box will be returned.
+    img_list : list
+        A list of images to be plotted.
+    bbox_list : list
+        A list of 4-tuples (minr, minc, maxr, maxc) to be plotted on top of the 
+        images in img_list.
     row_title : str, optional
         A title to be applied on the y-axis of the left-most image in case 
         multiple iterations of plot_bbox() want to be called e.g. to compare 
@@ -144,18 +108,12 @@ def plot_bbox(
     fig, axes : matplotlib.pyplot.Figure, array
         Matplotlib figure and axes containing plotted images.
     """
-
-    fig, axes = plt.subplots(ncols=len(img_n_list), figsize=figsize)
+    fig, axes = plt.subplots(ncols=len(img_list), figsize=figsize)
     ax = axes.ravel()
 
-    for i, img_n in enumerate(img_n_list):
+    for i, (img, bbox) in enumerate(zip(img_list, bbox_list)):
         
-        img = img_load_func(img_n)
-
-        bbox_minr, bbox_minc, bbox_maxr, bbox_maxc = region_gen_func(img_n)
-
         ax[i].imshow(img, cmap=cmap, interpolation='nearest')
-        ax[i].set_title(f'Image {img_n}')
         
         if row_title is not None:
             ax[0].set_ylabel(row_title)
@@ -165,17 +123,13 @@ def plot_bbox(
         if not show_axis:
             ax[i].set_xticks([])
             ax[i].set_yticks([])
-        
-        # Label connected areas in masked image
-        labels = morphology.label(img, connectivity=2)
-        # Turn labels into regions
-        regions = measure.regionprops(labels)
 
+        minr, minc, maxr, maxc = bbox
         # Plot bbox as rectangle on image
         rect = mpatches.Rectangle(
-            (bbox_minc, bbox_minr), 
-            bbox_maxc - bbox_minc, 
-            bbox_maxr - bbox_minr, 
+            (minc, minr), 
+            maxc - minc, 
+            maxr - minr, 
             fill=False, edgecolor='red', linewidth=2
         )
         ax[i].add_patch(rect)
