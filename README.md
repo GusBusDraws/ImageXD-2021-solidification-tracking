@@ -3,6 +3,8 @@
 Materials presented at [BIDS ImageXD
 2021](https://bids.berkeley.edu/events/imagexd-2021).
 
+Video of the talk: https://www.youtube.com/watch?v=cB1HTgmWTd8
+
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/cgusb/solidification-tracking.git/main?urlpath=%2Fvoila%2Frender%2Fslideshow.ipynb) (view Voilà slideshow)
 
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/cgusb/solidification-tracking/main?filepath=slideshow.ipynb) (run Jupyter notebook)
